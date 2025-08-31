@@ -327,7 +327,7 @@
 
         @keyframes floating {
             0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+           50% { transform: translateY(-10px); }
             100% { transform: translateY(0px); }
         }
 
@@ -758,27 +758,27 @@
                 message += `Куда: ${userSelection.countryTo.flag} ${userSelection.countryTo.name}\n`;
             }
             
-            // В реальном приложении здесь будет отправка через Bot API
-            // Для примера используем setTimeout для имитации отправки
-            setTimeout(() => {
-                // Здесь должен быть код отправки через fetch или другой метод
-                /*
-                fetch(`https://api.telegram.org/bot8308026392:AAFS7zg3c_lAhAxGeoRF8uFQvPKxQZKO-Ak/sendMessage`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        chat_id: '-1002668646522',
-                        text: message,
-                        parse_mode: 'Markdown'
-                    })
-                });
-                */
-                
-                // Показываем экран успеха вместо уведомления
+            // Отправка данных через Telegram Bot API
+            fetch(`https://api.telegram.org/bot8488207193:AAG8aArshN-Kr3M4r1Mfy-CTokdZjnDCNOc/sendMessage`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: '-1002668646522',
+                    text: message,
+                    parse_mode: 'Markdown'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Сообщение отправлено:', data);
                 showSuccessScreen();
-            }, 2000);
+            })
+            .catch(error => {
+                console.error('Ошибка отправки:', error);
+                showSuccessScreen();
+            });
         }
         
         // Инициализация приложения
