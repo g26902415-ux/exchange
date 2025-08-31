@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoinFlow | Обмен валют</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-dark: #5649c5;
+            --secondary: #fd79a8;
+            --accent: #00cec9;
+            --dark: #2d3436;
+            --light: #f8f9fa;
+            --background: #0f0f1e;
+            --card-bg: #1a1a2e;
+            --text: #ffffff;
+            --text-secondary: #b2bec3;
+            --success: #00b894;
+            --error: #d63031;
+            --border-radius: 20px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            --neon-shadow: 0 0 10px rgba(108, 92, 231, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', 'Raleway', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--background) 0%, #1e1e2e 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 16px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding-bottom: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding: 20px 0;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            border-radius: 3px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(108, 92, 231, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+        }
+
+        .card-title i {
+            margin-right: 12px;
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 16px;
+            background: rgba(108, 92, 231, 0.1);
+            border-radius: var(--border-radius);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            color: var(--text);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--neon-shadow);
+            border-color: var(--primary);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            color: white;
+            font-weight: 600;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, var(--secondary), #e84393);
+            color: white;
+            font-weight: 600;
+        }
+
+        .btn-accent {
+            background: linear-gradient(45deg, var(--accent), #00a8b5);
+            color: white;
+            font-weight: 600;
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, var(--success), #009d7a);
+            color: white;
+            font-weight: 600;
+        }
+
+        .btn-back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            background: rgba(108, 92, 231, 0.1);
+            border-radius: var(--border-radius);
+            border: none;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: var(--transition);
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .btn-back:hover {
+            background: rgba(108, 92, 231, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .btn-back i {
+            margin-right: 8px;
+        }
+
+        .icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            transition: var(--transition);
+        }
+
+        .btn:hover .icon {
+            transform: scale(1.2);
+        }
+
+        .currency-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .currency-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 8px;
+            background: rgba(108, 92, 231, 0.1);
+            border-radius: var(--border-radius);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text);
+        }
+
+        .currency-btn:hover {
+            background: rgba(108, 92, 231, 0.2);
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--neon-shadow);
+        }
+
+        .country-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .country-btn {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: rgba(108, 92, 231, 0.1);
+            border-radius: var(--border-radius);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text);
+        }
+
+        .country-btn:hover {
+            background: rgba(108, 92, 231, 0.2);
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--neon-shadow);
+        }
+
+        .flag {
+            margin-right: 12px;
+            font-size: 24px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loader {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 30px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 16px 32px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-weight: 500;
+        }
+
+        .notification.show {
+            opacity: 1;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(108, 92, 231, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(108, 92, 231, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(108, 92, 231, 0);
+            }
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-align: center;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding-bottom: 10px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            border-radius: 3px;
+        }
+
+        .currency-name {
+            font-size: 14px;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+            background: linear-gradient(45deg, var(--primary), var(--accent), var(--secondary), var(--primary));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .success-checkmark {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .check-icon {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            border-radius: 50%;
+            box-sizing: content-box;
+            border: 4px solid var(--success);
+            background-color: var(--card-bg);
+        }
+
+        .check-icon::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+            height: 40px;
+            width: 20px;
+            border-bottom: 4px solid var(--success);
+            border-right: 4px solid var(--success);
+        }
+
+        .success-message {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 18px;
+            color: var(--text);
+        }
+
+        .home-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .home-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--neon-shadow);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    <div class="container">
+        <!-- Главное меню -->
+        <div id="main-menu" class="fade-in">
+            <div class="header">
+                <div class="logo floating">CoinFlow</div>
+                <div class="subtitle">Быстро. Надежно. Выгодно.</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title"><i class="fas fa-rocket"></i> Выберите услугу:</div>
+                <div class="btn-grid">
+                    <button class="btn btn-primary pulse" onclick="showExchangeOptions()">
+                        <span class="icon"><i class="fas fa-exchange-alt"></i></span>
+                        <span>Обмен валют</span>
+                    </button>
+                    <button class="btn btn-secondary pulse" onclick="showCountrySelection('from')">
+                        <span class="icon"><i class="fas fa-globe-americas"></i></span>
+                        <span>Международные переводы</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Меню обмена -->
+        <div id="exchange-menu" class="hidden">
+            <button class="btn-back" onclick="showMainMenu()"><i class="fas fa-arrow-left"></i> Назад</button>
+            <div class="card">
+                <div class="card-title"><i class="fas fa-exchange-alt"></i> Тип операции:</div>
+                <div class="btn-grid">
+                    <button class="btn btn-primary" onclick="showCurrencySelection('buy')">
+                        <span class="icon"><i class="fas fa-cart-arrow-down"></i></span>
+                        <span>Купить</span>
+                    </button>
+                    <button class="btn btn-accent" onclick="showCurrencySelection('sell')">
+                        <span class="icon"><i class="fas fa-coins"></i></span>
+                        <span>Продать</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Выбор криптовалюты -->
+        <div id="currency-selection" class="hidden">
+            <button class="btn-back" onclick="showExchangeOptions()"><i class="fas fa-arrow-left"></i> Назад</button>
+            <div class="card">
+                <div class="card-title" id="currency-title"><i class="fas fa-coins"></i> Выберите валюту:</div>
+                <div class="currency-grid">
+                    <!-- Криптовалюты будут добавлены через JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Выбор валюты для обмена -->
+        <div id="target-currency-selection" class="hidden">
+            <button class="btn-back" onclick="showCurrencySelection()"><i class="fas fa-arrow-left"></i> Назад</button>
+            <div class="card">
+                <div class="card-title"><i class="fas fa-exchange-alt"></i> На что хотите обменять?</div>
+                <div class="currency-grid">
+                    <!-- Криптовалюты будут добавлены через JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Выбор страны отправления -->
+        <div id="country-from-selection" class="hidden">
+            <button class="btn-back" onclick="showMainMenu()"><i class="fas fa-arrow-left"></i> Назад</button>
+            <div class="card">
+                <div class="card-title"><i class="fas fa-plane-departure"></i> Откуда будет отправление?</div>
+                <div class="country-grid">
+                    <!-- Страны будут добавлены через JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Выбор страны назначения -->
+        <div id="country-to-selection" class="hidden">
+            <button class="btn-back" onclick="showCountrySelection('from')"><i class="fas fa-arrow-left"></i> Назад</button>
+            <div class="card">
+                <div class="card-title"><i class="fas fa-plane-arrival"></i> Куда будет отправление?</div>
+                <div class="country-grid">
+                    <!-- Страны будут добавлены через JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Загрузка -->
+        <div id="loading" class="hidden">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-paper-plane"></i> Отправляем информацию менеджеру</div>
+                <div class="loader"></div>
+                <p style="text-align: center; margin-top: 20px;">С вами свяжутся в ближайшее время</p>
+            </div>
+        </div>
+
+        <!-- Экран успешного завершения -->
+        <div id="success-screen" class="hidden">
+            <div class="card">
+                <div class="success-checkmark">
+                    <div class="check-icon"></div>
+                </div>
+                <div class="success-message">
+                    <h3>Заявка успешно создана!</h3>
+                    <p>Наш менеджер свяжется с вами в ближайшее время</p>
+                </div>
+                <button class="home-btn" onclick="showMainMenu()">
+                    <i class="fas fa-home"></i> Вернуться в главное меню
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">Информация отправлена менеджеру!</div>
+
+    <script>
+        // Инициализация Telegram Web App
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.enableClosingConfirmation();
+        tg.setHeaderColor('#6c5ce7');
+        tg.setBackgroundColor('#0f0f1e');
+        
+        // Данные приложения
+        const user = tg.initDataUnsafe?.user;
+        const currencies = [
+            { id: 'bitcoin', name: 'Bitcoin', icon: '₿', iconClass: 'fab fa-bitcoin' },
+            { id: 'ethereum', name: 'Ethereum', icon: 'Ξ', iconClass: 'fab fa-ethereum' },
+            { id: 'tron', name: 'Tron', icon: 'Ｔ', iconClass: 'fas fa-project-diagram' },
+            { id: 'usdt', name: 'USDT', icon: '💵', iconClass: 'fas fa-dollar-sign' },
+            { id: 'usdc', name: 'USDC', icon: '💵', iconClass: 'fas fa-dollar-sign' },
+            { id: 'monero', name: 'Monero', icon: '𝑀', iconClass: 'fab fa-monero' },
+            { id: 'solana', name: 'Solana', icon: '◎', iconClass: 'fas fa-sun' },
+            { id: 'toncoin', name: 'Toncoin', icon: '₮', iconClass: 'fas fa-coins' },
+            { id: 'mantle', name: 'Mantle', icon: '𝑀', iconClass: 'fas fa-layer-group' },
+            { id: 'cash', name: 'Наличные', icon: '💶', iconClass: 'fas fa-money-bill-wave' }
+        ];
+        
+        const countries = [
+            { code: 'de', name: 'Германия', flag: '🇩🇪' },
+            { code: 'fr', name: 'Франция', flag: '🇫🇷' },
+            { code: 'it', name: 'Италия', flag: '🇮🇹' },
+            { code: 'es', name: 'Испания', flag: '🇪🇸' },
+            { code: 'gb', name: 'Великобритания', flag: '🇬🇧' },
+            { code: 'us', name: 'США', flag: '🇺🇸' },
+            { code: 'ca', name: 'Канада', flag: '🇨🇦' },
+            { code: 'cn', name: 'Китай', flag: '🇨🇳' },
+            { code: 'th', name: 'Таиланд', flag: '🇹🇭' },
+            { code: 'nl', name: 'Нидерланды', flag: '🇳🇱' },
+            { code: 'be', name: 'Бельгия', flag: '🇧🇪' },
+            { code: 'ch', name: 'Швейцария', flag: '🇨🇭' }
+        ];
+        
+        // Переменные для хранения выбора пользователя
+        let userSelection = {
+            service: null,
+            action: null,
+            currency: null,
+            targetCurrency: null,
+            countryFrom: null,
+            countryTo: null
+        };
+        
+        // Функции навигации
+        function showMainMenu() {
+            hideAllSections();
+            document.getElementById('main-menu').classList.remove('hidden');
+            document.getElementById('main-menu').classList.add('fade-in');
+        }
+        
+        function showExchangeOptions() {
+            userSelection.service = 'exchange';
+            hideAllSections();
+            document.getElementById('exchange-menu').classList.remove('hidden');
+            document.getElementById('exchange-menu').classList.add('fade-in');
+        }
+        
+        function showCurrencySelection(action) {
+            userSelection.action = action;
+            hideAllSections();
+            const section = document.getElementById('currency-selection');
+            section.classList.remove('hidden');
+            section.classList.add('fade-in');
+            
+            const title = document.getElementById('currency-title');
+            title.innerHTML = `<i class="fas ${action === 'buy' ? 'fa-cart-arrow-down' : 'fa-coins'}"></i> ${action === 'buy' ? 'Что вы хотите купить?' : 'Что вы хотите продать?'}`;
+            
+            const grid = section.querySelector('.currency-grid');
+            grid.innerHTML = '';
+            
+            currencies.forEach(currency => {
+                const button = document.createElement('button');
+                button.className = 'currency-btn';
+                button.innerHTML = `
+                    <span class="icon"><i class="${currency.iconClass}"></i></span>
+                    <span class="currency-name">${currency.name}</span>
+                `;
+                button.onclick = () => selectCurrency(currency);
+                grid.appendChild(button);
+            });
+        }
+        
+        function showTargetCurrencySelection() {
+            hideAllSections();
+            const section = document.getElementById('target-currency-selection');
+            section.classList.remove('hidden');
+            section.classList.add('fade-in');
+            
+            const grid = section.querySelector('.currency-grid');
+            grid.innerHTML = '';
+            
+            // Показываем все валюты, кроме уже выбранной
+            currencies
+                .filter(currency => currency.id !== userSelection.currency.id)
+                .forEach(currency => {
+                    const button = document.createElement('button');
+                    button.className = 'currency-btn';
+                    button.innerHTML = `
+                        <span class="icon"><i class="${currency.iconClass}"></i></span>
+                        <span class="currency-name">${currency.name}</span>
+                    `;
+                    button.onclick = () => selectTargetCurrency(currency);
+                    grid.appendChild(button);
+                });
+        }
+        
+        function showCountrySelection(type) {
+            userSelection.service = 'transfer';
+            hideAllSections();
+            
+            const sectionId = type === 'from' ? 'country-from-selection' : 'country-to-selection';
+            const section = document.getElementById(sectionId);
+            section.classList.remove('hidden');
+            section.classList.add('fade-in');
+            
+            const grid = section.querySelector('.country-grid');
+            grid.innerHTML = '';
+            
+            countries.forEach(country => {
+                const button = document.createElement('button');
+                button.className = 'country-btn';
+                button.innerHTML = `
+                    <span class="flag">${country.flag}</span>
+                    <span>${country.name}</span>
+                `;
+                button.onclick = () => selectCountry(country, type);
+                grid.appendChild(button);
+            });
+        }
+        
+        function showLoading() {
+            hideAllSections();
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('loading').classList.add('fade-in');
+        }
+        
+        function showSuccessScreen() {
+            hideAllSections();
+            document.getElementById('success-screen').classList.remove('hidden');
+            document.getElementById('success-screen').classList.add('fade-in');
+        }
+        
+        function hideAllSections() {
+            const sections = document.querySelectorAll('.container > div');
+            sections.forEach(section => {
+                section.classList.add('hidden');
+                section.classList.remove('fade-in');
+            });
+        }
+        
+        // Функции выбора
+        function selectCurrency(currency) {
+            userSelection.currency = currency;
+            showTargetCurrencySelection();
+        }
+        
+        function selectTargetCurrency(currency) {
+            userSelection.targetCurrency = currency;
+            sendDataToManager();
+        }
+        
+        function selectCountry(country, type) {
+            if (type === 'from') {
+                userSelection.countryFrom = country;
+                showCountrySelection('to');
+            } else {
+                userSelection.countryTo = country;
+                sendDataToManager();
+            }
+        }
+        
+        // Отправка данных менеджеру
+        function sendDataToManager() {
+            showLoading();
+            
+            // Формируем сообщение для менеджера
+            let message = `👤 *Новый запрос от пользователя:*\n`;
+            message += `ID: ${user?.id || 'неизвестно'}\n`;
+            message += `Имя: ${user?.first_name || ''} ${user?.last_name || ''}\n`;
+            message += `Username: @${user?.username || 'не указан'}\n\n`;
+            
+            if (userSelection.service === 'exchange') {
+                message += `💰 *Запрос на обмен:*\n`;
+                message += `Действие: ${userSelection.action === 'buy' ? 'Покупка' : 'Продажа'}\n`;
+                message += `Валюта: ${userSelection.currency.name}\n`;
+                message += `На валюту: ${userSelection.targetCurrency.name}\n`;
+            } else {
+                message += `🌎 *Запрос на международный перевод:*\n`;
+                message += `Откуда: ${userSelection.countryFrom.flag} ${userSelection.countryFrom.name}\n`;
+                message += `Куда: ${userSelection.countryTo.flag} ${userSelection.countryTo.name}\n`;
+            }
+            
+            // В реальном приложении здесь будет отправка через Bot API
+            // Для примера используем setTimeout для имитации отправки
+            setTimeout(() => {
+                // Здесь должен быть код отправки через fetch или другой метод
+                /*
+                fetch(`https://api.telegram.org/bot8308026392:AAFS7zg3c_lAhAxGeoRF8uFQvPKxQZKO-Ak/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: '-1002668646522',
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
+                */
+                
+                // Показываем экран успеха вместо уведомления
+                showSuccessScreen();
+            }, 2000);
+        }
+        
+        // Инициализация приложения
+        showMainMenu();
+    </script>
+</body>
+</html>
